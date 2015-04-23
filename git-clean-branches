@@ -15,6 +15,9 @@ git fetch origin
 git checkout master
 git rebase origin/master || git rebase --abort
 
+# Remove historic remote tracking branches.
+git remote prune origin
+
 TO_REMOVE=""
 for branch in $(git branch --merged | grep -v master )
 do
