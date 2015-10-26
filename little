@@ -1,7 +1,17 @@
 #!/usr/bin/zsh
-for in in $(seq 3) ; do
-pidof chromium >/dev/null && { killall chromium ; sleep 1 }
+
+# Switch all monitors to 1080p.
+xrandr -s 1920x1080
+
+# Use xrandr --auto to make sure all monitors are enabled.
+xrandr --auto
+
+# Switch GNOME (GTK) & Chromium to non-hidpi mode. Kill Chromium
+# first, and do that repeatdly until it actually dies.
+
+for i in in $(seq 3) ; do
+    pidof chromium >/dev/null && { killall chromium ; sleep 1 }
 done
+
 gsettings set org.gnome.desktop.interface scaling-factor 1
 chromium --force-device-scale-factor=1 & disown
-
