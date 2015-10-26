@@ -1,0 +1,7 @@
+#!/usr/bin/zsh
+for in in $(seq 3) ; do
+pidof chromium >/dev/null && { killall chromium ; sleep 1 }
+done
+gsettings set org.gnome.desktop.interface scaling-factor 2
+chromium & disown
+
