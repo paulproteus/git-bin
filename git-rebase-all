@@ -23,6 +23,9 @@ do
     # origin/master.
     if ! git config --get branch.$branch.merge >/dev/null; then
         git rebase origin/master || git rebase --abort
+    else
+        # Rebase it against its remote tracking branch.
+        git pull --rebase || git rebase --abort
     fi
 done
 

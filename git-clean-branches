@@ -21,10 +21,15 @@ git remote prune origin
 TO_REMOVE=""
 for branch in $(git branch --merged | grep -v master )
 do
-    # If the branch has no remote tracking branch, and it is already merged
-    # origin/master, then throw it away.
-    if ! git config --get branch.$branch.merge >/dev/null; then
+    TRACKING_BRANCH="$(git config --get branch.$branch.merge)"
+    TRACKING_BRANCH="${TRACKING_BRANCH:-refs/heads/master}"
+    # If the branch has a remote tracking branch of master (or empty
+    # string), and it is already merged origin/master, then throw it
+    # away.
+    if [ "${TRACKING_BRANCH}" = "refs/heads/master" ] ; then
         TO_REMOVE="$TO_REMOVE $branch"
+    else
+        echo "Ignoring branch $branch due to remote tracking branch ${TRACKING_BRANCH}."
     fi
 done
 
