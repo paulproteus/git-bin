@@ -1,0 +1,58 @@
+#!/usr/bin/python3
+# -*- mode: python -*-
+import datetime
+import os
+import subprocess
+
+
+def generate_message():
+    s = '''As of {nowmonth} {nowyear}, Sandstorm releases are signed with the PGP key with
+fingerprint 160D 2D57 7518 B58D 94C9  800B 63F2 2749 9DA8 CCBD. This assertion
+will be updated monthly; do not trust this certificate after {futuremonth} {futureyear}.
+'''
+    now = datetime.datetime.utcnow()
+    nowmonth = now.strftime("%B")
+    nowyear = now.strftime("%Y")
+    # Move 'now' forward until the month changes.
+    nowmonthnumeric = now.month
+    future = now + datetime.timedelta(days=1)
+    while future.month == now.month:
+        future += datetime.timedelta(days=1)
+
+    futuremonth = future.strftime("%B")
+    futureyear = future.strftime("%Y")
+    return s.format(
+        nowmonth=nowmonth,
+        nowyear=nowyear,
+        futuremonth=futuremonth,
+        futureyear=futureyear)
+
+
+def main():
+    message = generate_message()
+    gpg_argv = ['gpg', '--sign']
+    if os.environ.get('DEBEMAIL'):
+        gpg_argv[1:1] = ['--default-key=' + os.environ['DEBEMAIL']]
+
+    gpg = subprocess.Popen(gpg_argv,
+                           stdin=subprocess.PIPE,
+                           stdout=subprocess.PIPE)
+    stdout = gpg.communicate(input=generate_message().encode('ascii'))[0]
+
+    should_write = False
+
+    if os.path.exists(os.path.expanduser('~/projects/sandstorm/keys')):
+        os.chdir(os.path.expanduser('~/projects/sandstorm/keys'))
+        should_write = True
+
+    if not should_write:
+        print(repr(stdout))
+        return
+
+    with open('release-certificate.asheesh.gpg', 'wb') as fd:
+        fd.write(stdout)
+
+    subprocess.check_call(['gpg', '--decrypt', 'release-certificate.asheesh.gpg'])
+
+if __name__ == '__main__':
+    main()
