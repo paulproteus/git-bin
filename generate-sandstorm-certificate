@@ -30,7 +30,7 @@ will be updated monthly; do not trust this certificate after {futuremonth} {futu
 
 def main():
     message = generate_message()
-    gpg_argv = ['gpg', '--sign']
+    gpg_argv = ['gpg', '--sign', '-a']
     if os.environ.get('DEBEMAIL'):
         gpg_argv[1:1] = ['--default-key=' + os.environ['DEBEMAIL']]
 
