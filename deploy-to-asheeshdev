@@ -1,0 +1,7 @@
+#!/bin/bash
+set -euo pipefail
+
+make sandstorm-0-fast.tar.xz
+scp sandstorm-0-fast.tar.xz asheeshdev.sandcats.io:/tmp
+ssh asheeshdev.sandcats.io sudo sandstorm update /tmp/sandstorm-0-fast.tar.xz
+

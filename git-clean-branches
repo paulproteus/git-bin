@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # 'use strict';
 set -eou pipefail
@@ -21,7 +22,7 @@ git remote prune origin
 TO_REMOVE=""
 for branch in $(git branch --merged | grep -v master )
 do
-    TRACKING_BRANCH="$(git config --get branch.$branch.merge)"
+    TRACKING_BRANCH="$(git config --get branch.$branch.merge || echo '')"
     TRACKING_BRANCH="${TRACKING_BRANCH:-refs/heads/master}"
     # If the branch has a remote tracking branch of master (or empty
     # string), and it is already merged origin/master, then throw it
