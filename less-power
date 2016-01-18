@@ -1,0 +1,10 @@
+#!/bin/bash
+sudo service bluetooth stop
+sudo rmmod btusb btintel btbcm rfcomm bnep bluetooth
+sudo rmmod uvcvideo videobuf2_vmalloc videobuf2_core v4l2_common videobuf2_memops
+sudo service sandstorm stop
+killall -9 pulseaudio ; sudo rmmod snd-hda-codec-realtek snd-hda-codec-hdmi snd-hda-codec-generic snd-hda-intel snd-hda-controller snd-hda-codec snd-pcm snd-timer videodev media kvm-intel kvm mei-me mei parport-pc ppdev
+sudo rmmod usbhid hid-multitouch
+sudo rmmod vboxnetadp vboxnetflt vboxpci vboxdrv
+sudo rmmod pn544_mei mei_phy pn544 hci nfc
+sudo rmmod joydev
