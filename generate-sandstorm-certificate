@@ -49,10 +49,10 @@ def main():
         print(repr(stdout))
         return
 
-    with open('release-certificate.asheesh.gpg', 'wb') as fd:
+    with open('release-certificate.asheesh.sig', 'wb') as fd:
         fd.write(stdout)
 
-    subprocess.check_call(['gpg', '--decrypt', 'release-certificate.asheesh.gpg'])
+    subprocess.check_call(['gpg', '--decrypt', 'release-certificate.asheesh.sig'])
 
 if __name__ == '__main__':
     main()
