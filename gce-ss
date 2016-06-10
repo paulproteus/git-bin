@@ -1,0 +1,2 @@
+#!/bin/bash
+gcloud --account asheesh@corp.sandstorm.io  --project sandstorm-io --zone "us-central1-a" compute "$@"
