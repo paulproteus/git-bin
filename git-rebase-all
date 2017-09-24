@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # 'use strict';
 set -eou pipefail
@@ -12,6 +13,7 @@ echo 'No files seem changed; continuing.'
 
 # Switch to master at the start & end, for sanity.
 git fetch origin
+git remote prune origin
 git checkout master
 git rebase origin/master || git rebase --abort
 
@@ -21,11 +23,12 @@ do
 
     # If the branch has no remote tracking branch, rebase it against
     # origin/master.
-    if ! git config --get branch.$branch.merge >/dev/null; then
-        git rebase origin/master || git rebase --abort
-    else
+    BRANCH="$(git for-each-ref --format='%(upstream:short)'  refs/heads/$branch)"
+    if [ ! -z "$BRANCH" ] && git show-ref "$BRANCH" > /dev/null; then
         # Rebase it against its remote tracking branch.
         git pull --rebase || git rebase --abort
+    else
+        git rebase origin/master || git rebase --abort
     fi
 done
 
